@@ -102,7 +102,6 @@ class AsnController extends Controller
      */
     public function update(Request $request, $id)
     {
-        exit;
         set_time_limit(0);
         \Log::notice('        =/\                 /\=');
         \Log::notice('        / \`._   (\_/)   _.`/ \\');
@@ -111,23 +110,27 @@ class AsnController extends Controller
         \Log::notice('     /` .` `\;-,`\___/`,-;/` `. `\\');
         \Log::notice('    /.-` INIT  `\(-V-)/`       `-.\\');
         \Log::notice('    `            "   "');
-        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/netixlan');
-        $list_net_ix_lan = array_reverse(json_decode($response->body(),true)['data']);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/ix');
+        $list_ix = json_decode($response->body(),true)['data'];
 
-        \Log::notice("NET_IX_LAN TOTAL: ".count($list_net_ix_lan));
-        foreach($list_net_ix_lan as $net_ix_lan){
-            $net_ix_lan_data = [
-                'out_id' => $net_ix_lan['id'],
-                'out_org_id' => $net_ix_lan['org_id'],
-                'out_name' => $net_ix_lan['name'],
-                'out_city' => $net_ix_lan['city'],
-                'out_country' => $net_ix_lan['country'],
-                'out_region_continent' => $net_ix_lan['region_continent'],
-                'out_create' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['created'])),
-                'out_update' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['updated']))
+        \Log::notice("IX TOTAL: ".count($list_ix));
+        $count = 0;
+        foreach($list_ix as $ix){
+            if($count++ < (count($list_ix)/2)){
+                continue;
+            }
+            $ix_data = [
+                'out_id' => $ix['id'],
+                'out_org_id' => $ix['org_id'],
+                'out_name' => $ix['name'],
+                'out_city' => $ix['city'],
+                'out_country' => $ix['country'],
+                'out_region_continent' => $ix['region_continent'],
+                'out_create' => str_replace('Z','',str_replace('T',' ',$ix['created'])),
+                'out_update' => str_replace('Z','',str_replace('T',' ',$ix['updated']))
             ];
-            NetIxLan::updateOrCreate(['out_id' => $net_ix_lan_data['out_id']],\Arr::except($net_ix_lan_data, ['out_id']));
-            \Log::notice("####### {$net_ix_lan['id']}");
+            Ix::updateOrCreate(['out_id' => $ix_data['out_id']],\Arr::except($ix_data, ['out_id']));
+            \Log::notice("####### {$ix['id']}");
         }
         \Log::error('END');
     }

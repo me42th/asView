@@ -1,0 +1,7 @@
+POST http://localhost:8001/asn
+######################
+GET http://localhost:8000/asn
+######################
+PUT http://localhost:8000/asn/1
+######################
+DELETE http://localhost:8000/asn/1

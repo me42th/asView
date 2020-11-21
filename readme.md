@@ -36,3 +36,63 @@
     [created] => 2010-07-29T00:00:00Z
     [updated] => 2020-06-29T07:53:16Z
 ``` 
+
+---------------------------------------------------------------------
+RELATORIOS
+---------------------------------------------------------------------
+
+``` 
+select tabela.out_name as 'intersecao' from
+(
+    select ix.out_name 
+    from asn 
+    	join net_ix_lan as pivot 
+    		on pivot.out_asn = asn.out_asn 
+    	join ix 
+    		on pivot.out_ix_id = ix.out_id      
+    where asn.out_asn = 28186
+) as tabela 
+	join (
+    	select ix.out_name 
+		from asn      
+			join net_ix_lan as pivot          
+				on pivot.out_asn = asn.out_asn      
+			join ix
+				on pivot.out_ix_id = ix.out_id      
+    	where asn.out_asn = 12322
+) as tabela2 
+on tabela.out_name = tabela2.out_name;
+
+select ix.out_name as 'uniao'
+	from asn      
+		join net_ix_lan as pivot          
+			on pivot.out_asn = asn.out_asn      
+		join ix
+			on pivot.out_ix_id = ix.out_id      
+where asn.out_asn = 12322
+union
+select ix.out_name 
+	from asn      
+		join net_ix_lan as pivot          
+			on pivot.out_asn = asn.out_asn      
+		join ix
+			on pivot.out_ix_id = ix.out_id      
+where asn.out_asn = 28186;
+
+select ix.out_name as 'diferenca'
+from asn 
+	join net_ix_lan as pivot 
+		on pivot.out_asn = asn.out_asn 
+	join ix 
+		on pivot.out_ix_id = ix.out_id      
+where asn.out_asn = 12322
+and ix.out_name not in(
+	select ix.out_name 
+		from asn      
+			join net_ix_lan as pivot          
+				on pivot.out_asn = asn.out_asn      
+			join ix
+				on pivot.out_ix_id = ix.out_id      
+	where asn.out_asn = 28186
+) group by ix.out_name;
+``` 

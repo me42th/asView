@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\AsnController;
+use \App\Http\Controllers\AsViewController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +13,16 @@ use \App\Http\Controllers\AsnController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AsViewController::class, 'index']);
 
-Route::resource('asn',AsnController::class);
+
+Auth::routes();
+
+Route::get('/home', function() {
+    return view('home');
+})->name('home')->middleware('auth');
+
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();

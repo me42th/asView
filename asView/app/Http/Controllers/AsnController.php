@@ -53,8 +53,9 @@ class AsnController extends Controller
     {
 
         set_time_limit(0);
-        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/ix');
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/netixlan');
         $list_ix = json_decode($response->body(),true)['data'];
+        \Log::error(print_r($list_ix,true));
         return response()->json($list_ix);
     }
 
@@ -77,7 +78,11 @@ class AsnController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        set_time_limit(0);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/net');
+        $list_ix = json_decode($response->body(),true)['data'];
+        \Log::error(print_r($list_ix,true));
+        return response()->json($list_ix);
     }
 
     /**
@@ -88,6 +93,11 @@ class AsnController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        set_time_limit(0);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/ix');
+        $list_ix = json_decode($response->body(),true)['data'];
+        \Log::error(print_r($list_ix,true));
+        return response()->json($list_ix);
     }
 }

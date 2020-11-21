@@ -64,21 +64,21 @@ class AsnController extends Controller
         \Log::notice('    /.-` INIT  `\(-V-)/`       `-.\\');
         \Log::notice('    `            "   "');
         $response = Http::timeout(0)->get('https://www.peeringdb.com/api/netixlan');
-        $list_ix = array_reverse(json_decode($response->body(),true)['data']);
+        $list_net_ix_lan = json_decode($response->body(),true)['data'];
 
-        \Log::notice("ix TOTAL: ".count($list_ix));
-        foreach($list_ix as $ix){
-            $ix_data = [
-                'out_id' => $ix['id'],
-                'out_net_id' => $ix['net_id'],
-                'out_ix_id' => $ix['ix_id'],
-                'out_ixlan_id' => $ix['ixlan_id'],
-                'out_asn' => $ix['asn'],
-                'out_create' => str_replace('Z','',str_replace('T',' ',$ix['created'])),
-                'out_update' => str_replace('Z','',str_replace('T',' ',$ix['updated']))
+        \Log::notice("NET_IX_LAN TOTAL: ".count($list_net_ix_lan));
+        foreach($list_net_ix_lan as $net_ix_lan){
+            $net_ix_lan_data = [
+                'out_id' => $net_ix_lan['id'],
+                'out_net_id' => $net_ix_lan['net_id'],
+                'out_ix_id' => $net_ix_lan['ix_id'],
+                'out_ixlan_id' => $net_ix_lan['ixlan_id'],
+                'out_asn' => $net_ix_lan['asn'],
+                'out_create' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['created'])),
+                'out_update' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['updated']))
             ];
-            Ix::updateOrCreate(['out_id' => $ix_data['out_id']],\Arr::except($ix_data, ['out_id']));
-            \Log::notice("####### {$ix['id']}");
+            NetIxLan::updateOrCreate(['out_id' => $net_ix_lan_data['out_id']],\Arr::except($net_ix_lan_data, ['out_id']));
+            \Log::notice("####### {$net_ix_lan['id']}");
         }
         \Log::error('END');
     }
@@ -102,6 +102,7 @@ class AsnController extends Controller
      */
     public function update(Request $request, $id)
     {
+        exit;
         set_time_limit(0);
         \Log::notice('        =/\                 /\=');
         \Log::notice('        / \`._   (\_/)   _.`/ \\');

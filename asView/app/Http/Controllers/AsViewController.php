@@ -42,11 +42,13 @@ class AsViewController extends Controller
         $union = null;
         $only_a = [];
         $only_b = [];
+        $all_a = [];
+        $all_b = [];
         if(!($asn_a xor $asn_b))
         {
-            $sql = "select tabela.out_name as 'intersecao' from
+            $sql = "select tabela.out_name, tabela.out_city, tabela.out_country, tabela.out_region_continent from
             (
-                select ix.out_name
+                select ix.out_name, ix.out_city, out_country, out_region_continent
                 from asn
                     join net_ix_lan as pivot
                         on pivot.out_asn = asn.out_asn
@@ -55,7 +57,7 @@ class AsViewController extends Controller
                 where asn.out_asn = '$asn_a'
             ) as tabela
                 join (
-                    select ix.out_name
+                    select ix.out_name, ix.out_city, out_country, out_region_continent
                     from asn
                         join net_ix_lan as pivot
                             on pivot.out_asn = asn.out_asn
@@ -64,10 +66,10 @@ class AsViewController extends Controller
                     where asn.out_asn = '$asn_b'
             ) as tabela2
             on tabela.out_name = tabela2.out_name
-            group by tabela.out_name;";
+            group by tabela.out_name, tabela.out_city, tabela.out_country, tabela.out_region_continent;";
             $intersection = \DB::select($sql);
 
-            $sql = "select ix.out_name as 'uniao'
+            $sql = "select ix.out_name, ix.out_city, ix.out_country, ix.out_region_continent
                     from asn
                         join net_ix_lan as pivot
                             on pivot.out_asn = asn.out_asn
@@ -75,7 +77,7 @@ class AsViewController extends Controller
                             on pivot.out_ix_id = ix.out_id
                     where asn.out_asn = '$asn_a'
                     union
-                    select ix.out_name
+                    select ix.out_name, ix.out_city, out_country, out_region_continent
                         from asn
                             join net_ix_lan as pivot
                                 on pivot.out_asn = asn.out_asn
@@ -85,31 +87,31 @@ class AsViewController extends Controller
             $union = \DB::select($sql);
 
             $sql = "
-                select ix.out_name as 'diferenca'
+                select ix.out_name, ix.out_city, ix.out_country, ix.out_region_continent
                 from asn
                     join net_ix_lan as pivot
                         on pivot.out_asn = asn.out_asn
                     join ix
                         on pivot.out_ix_id = ix.out_id
                 where asn.out_asn = '$asn_a'
-                group by ix.out_name;";
+                group by ix.out_name, ix.out_city, out_country, out_region_continent;";
             $all_a = \DB::select($sql);
 
             $sql = "
-                select ix.out_name as 'diferenca'
+                select ix.out_name, ix.out_city, ix.out_country, ix.out_region_continent
                 from asn
                     join net_ix_lan as pivot
                         on pivot.out_asn = asn.out_asn
                     join ix
                         on pivot.out_ix_id = ix.out_id
                 where asn.out_asn = '$asn_b'
-                group by ix.out_name;";
+                group by ix.out_name, ix.out_city, out_country, out_region_continent;";
             $all_b = \DB::select($sql);
 
             foreach($all_a as $item_a){
                 $flag = true;
                 foreach($all_b as $item_b)
-                    if($item_a->diferenca == $item_b->diferenca) $flag = false;
+                    if($item_a->out_name == $item_b->out_name) $flag = false;
                 if($flag){
                     $only_a[] = $item_a;
                 }
@@ -118,7 +120,7 @@ class AsViewController extends Controller
             foreach($all_b as $item_b){
                 $flag = true;
                 foreach($all_a as $item_a)
-                    if($item_a->diferenca == $item_b->diferenca) $flag = false;
+                    if($item_a->out_name == $item_b->out_name) $flag = false;
                 if($flag){
                     $only_b[] = $item_b;
                 }
@@ -126,6 +128,6 @@ class AsViewController extends Controller
         }
 
         $asn = $asn->limit(100)->orderBy('out_name')->paginate(100);
-        return view('welcome')->with(compact('asn','intersection','union','org_a','org_b','only_a','only_b'));
+        return view('welcome')->with(compact('asn','intersection','union','org_a','org_b','only_a','only_b','all_a','all_b'));
     }
 }

@@ -38,16 +38,48 @@
                         @endforeach
                         </tbody>
                       </table>
-
                     </div>
-                    <!-- /.card-body -->
                   </div>
                   {{ $asn->links() }}
                 @if($org_a && $org_b)
 
                     <div class="row">
                     <div class="col-12">
-                            <h3>{{$org_a}} X {{$org_b}}</h3>
+
+                    <div class="post">
+                        <h2>{{$org_a}}</h2>
+                        <div class="">
+                        </div>
+                        <!-- /.user-block -->
+                        <ol class="text-sm" >
+                            @foreach($all_a as $el)
+                            <li>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
+                            </li>
+                            @endforeach
+                        </ol>
+
+                        <p>
+                            Total de Objetos {{count($all_a)}}
+                        </p>
+                    </div>
+                    <div class="post">
+                        <h2>{{$org_b}}</h2>
+                        <div class="">
+                        </div>
+                        <!-- /.user-block -->
+                        <ol class="text-sm" >
+                            @foreach($all_b as $el)
+                            <li>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
+                            </li>
+                            @endforeach
+                        </ol>
+
+                        <p>
+                            Total de Objetos {{count($all_b)}}
+                        </p>
+                    </div>
                       <div class="post">
                           <div class="user-block">
                               <h4>Interseção</h4><br>
@@ -55,7 +87,7 @@
                         <ol class="text-sm" >
                             @foreach($intersection as $el)
                             <li>
-                                <b> {{print_r($el->intersecao)}} </b>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
                             </li>
                             @endforeach
                         </ol>
@@ -77,7 +109,7 @@
                         <ol class="text-sm" >
                             @foreach($union as $el)
                             <li>
-                                <b> {{print_r($el->uniao)}} </b>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
                             </li>
                             @endforeach
                         </ol>
@@ -86,7 +118,8 @@
                         </p>
                     </div>
 
-                      <div class="post">
+
+                    <div class="post">
                           <div class="user-block">
                               <h4>Exclusivo {{$org_a}}</h4>
                             </div>
@@ -94,7 +127,7 @@
                         <ol class="text-sm" >
                             @foreach($only_a as $el)
                             <li>
-                                <b> {{print_r($el->diferenca)}} </b>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
                             </li>
                             @endforeach
                         </ol>
@@ -112,7 +145,7 @@
                       <ol class="text-sm" >
                         @foreach($only_b as $el)
                         <li>
-                            <b> {{print_r($el->diferenca)}} </b>
+                            <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
                         </li>
                         @endforeach
                     </ol>

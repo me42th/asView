@@ -11,39 +11,39 @@ use \App\Models\Ix;
 
 class AsnController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        set_time_limit(0);
-        \Log::notice('        =/\                 /\=');
-        \Log::notice('        / \`._   (\_/)   _.`/ \\');
-        \Log::notice('       / .``._`--(o.o)--`_.``. \\');
-        \Log::notice('      /.` _/ |``=/ " \=``| \_ `.\\');
-        \Log::notice('     /` .` `\;-,`\___/`,-;/` `. `\\');
-        \Log::notice('    /.-` INIT  `\(-V-)/`       `-.\\');
-        \Log::notice('    `            "   "');
-        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/net');
-        $list_asn = array_reverse(json_decode($response->body(),true)['data']);
 
-        \Log::notice("ASN TOTAL: ".count($list_asn));
-        foreach($list_asn as $asn){
-            $asn_data = [
-                'out_id' => $asn['id'],
-                'out_org_id' => $asn['org_id'],
-                'out_name' => $asn['name'],
-                'out_asn' => $asn['asn'],
-                'out_policy_general' => $asn['policy_general'],
-                'out_create' => str_replace('Z','',str_replace('T',' ',$asn['created'])),
-                'out_update' => str_replace('Z','',str_replace('T',' ',$asn['updated']))
-            ];
-            Asn::updateOrCreate(['out_id' => $asn_data['out_id']],\Arr::except($asn_data, ['out_id']));
-            \Log::notice("####### {$asn['id']}");
-        }
-        \Log::error('END');
+    public function fetchAsn(){
+        set_time_limit(0);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/net');
+        $this->asn = array_reverse(json_decode($response->body(),true)['data']);
+    }
+
+    public function fetchNetIxLan(){
+        set_time_limit(0);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/netixlan');
+        $this->net_ix_lan = json_decode($response->body(),true)['data'];
+    }
+
+    public function fetchIx(){
+        set_time_limit(0);
+        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/ix');
+        $this->ix = json_decode($response->body(),true)['data'];
+    }
+
+    public $asn,$ix,$net_ix_lan;
+    public function index($asn)
+    {
+        $asn_data = [
+            'out_id' => $asn['id'],
+            'out_org_id' => $asn['org_id'],
+            'out_name' => $asn['name'],
+            'out_asn' => $asn['asn'],
+            'out_policy_general' => $asn['policy_general'],
+            'out_create' => str_replace('Z','',str_replace('T',' ',$asn['created'])),
+            'out_update' => str_replace('Z','',str_replace('T',' ',$asn['updated']))
+        ];
+        Asn::updateOrCreate(['out_id' => $asn_data['out_id']],\Arr::except($asn_data, ['out_id']));
+
     }
 
     /**
@@ -52,87 +52,33 @@ class AsnController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($net_ix_lan)
     {
+    $net_ix_lan_data = [
+        'out_id' => $net_ix_lan['id'],
+        'out_net_id' => $net_ix_lan['net_id'],
+        'out_ix_id' => $net_ix_lan['ix_id'],
+        'out_ixlan_id' => $net_ix_lan['ixlan_id'],
+        'out_asn' => $net_ix_lan['asn'],
+        'out_create' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['created'])),
+        'out_update' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['updated']))
+    ];
+    NetIxLan::updateOrCreate(['out_id' => $net_ix_lan_data['out_id']],\Arr::except($net_ix_lan_data, ['out_id']));
+ }
 
-        set_time_limit(0);
-        \Log::notice('        =/\                 /\=');
-        \Log::notice('        / \`._   (\_/)   _.`/ \\');
-        \Log::notice('       / .``._`--(o.o)--`_.``. \\');
-        \Log::notice('      /.` _/ |``=/ " \=``| \_ `.\\');
-        \Log::notice('     /` .` `\;-,`\___/`,-;/` `. `\\');
-        \Log::notice('    /.-` INIT  `\(-V-)/`       `-.\\');
-        \Log::notice('    `            "   "');
-        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/netixlan');
-        $list_net_ix_lan = json_decode($response->body(),true)['data'];
-
-        \Log::notice("NET_IX_LAN TOTAL: ".count($list_net_ix_lan));
-        foreach($list_net_ix_lan as $net_ix_lan){
-            $net_ix_lan_data = [
-                'out_id' => $net_ix_lan['id'],
-                'out_net_id' => $net_ix_lan['net_id'],
-                'out_ix_id' => $net_ix_lan['ix_id'],
-                'out_ixlan_id' => $net_ix_lan['ixlan_id'],
-                'out_asn' => $net_ix_lan['asn'],
-                'out_create' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['created'])),
-                'out_update' => str_replace('Z','',str_replace('T',' ',$net_ix_lan['updated']))
-            ];
-            NetIxLan::updateOrCreate(['out_id' => $net_ix_lan_data['out_id']],\Arr::except($net_ix_lan_data, ['out_id']));
-            \Log::notice("####### {$net_ix_lan['id']}");
-        }
-        \Log::error('END');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update($ix)
     {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        set_time_limit(0);
-        \Log::notice('        =/\                 /\=');
-        \Log::notice('        / \`._   (\_/)   _.`/ \\');
-        \Log::notice('       / .``._`--(o.o)--`_.``. \\');
-        \Log::notice('      /.` _/ |``=/ " \=``| \_ `.\\');
-        \Log::notice('     /` .` `\;-,`\___/`,-;/` `. `\\');
-        \Log::notice('    /.-` INIT  `\(-V-)/`       `-.\\');
-        \Log::notice('    `            "   "');
-        $response = Http::timeout(0)->get('https://www.peeringdb.com/api/ix');
-        $list_ix = json_decode($response->body(),true)['data'];
-
-        \Log::notice("IX TOTAL: ".count($list_ix));
-        $count = 0;
-        foreach($list_ix as $ix){
-            if($count++ < (count($list_ix)/2)){
-                continue;
-            }
-            $ix_data = [
-                'out_id' => $ix['id'],
-                'out_org_id' => $ix['org_id'],
-                'out_name' => $ix['name'],
-                'out_city' => $ix['city'],
-                'out_country' => $ix['country'],
-                'out_region_continent' => $ix['region_continent'],
-                'out_create' => str_replace('Z','',str_replace('T',' ',$ix['created'])),
-                'out_update' => str_replace('Z','',str_replace('T',' ',$ix['updated']))
-            ];
-            Ix::updateOrCreate(['out_id' => $ix_data['out_id']],\Arr::except($ix_data, ['out_id']));
-            \Log::notice("####### {$ix['id']}");
-        }
-        \Log::error('END');
+        $ix_data = [
+            'out_id' => $ix['id'],
+            'out_org_id' => $ix['org_id'],
+            'out_name' => $ix['name'],
+            'out_city' => $ix['city'],
+            'out_country' => $ix['country'],
+            'out_region_continent' => $ix['region_continent'],
+            'out_create' => str_replace('Z','',str_replace('T',' ',$ix['created'])),
+            'out_update' => str_replace('Z','',str_replace('T',' ',$ix['updated']))
+        ];
+        Ix::updateOrCreate(['out_id' => $ix_data['out_id']],\Arr::except($ix_data, ['out_id']));
     }
 
     /**

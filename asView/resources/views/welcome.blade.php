@@ -60,7 +60,7 @@
                         </ol>
 
                         <p>
-                            Total de Objetos {{count($all_a)}}
+                            Total de IX: {{count($all_a)}}
                         </p>
                     </div>
                     <div class="post">
@@ -77,7 +77,7 @@
                         </ol>
 
                         <p>
-                            Total de Objetos {{count($all_b)}}
+                            Total de IX: {{count($all_b)}}
                         </p>
                     </div>
                       <div class="post">
@@ -94,7 +94,7 @@
                     </div>
 
                     <p>
-                      Objetos Compartilhados {{count($intersection)}}
+                      IX Compartilhados: {{count($intersection)}}
                     </p>
                 </div>
 
@@ -114,7 +114,7 @@
                             @endforeach
                         </ol>
                         <p>
-                            Total de Objetos {{count($union)}}
+                            Total de IX: {{count($union)}}
                         </p>
                     </div>
 
@@ -133,7 +133,7 @@
                         </ol>
 
                         <p>
-                            Total de Objetos {{count($only_a)}}
+                            Total de IX: {{count($only_a)}}
                         </p>
                     </div>
 
@@ -151,7 +151,7 @@
                     </ol>
 
                     <p>
-                        Total de Objetos {{count($only_b)}}
+                        Total de IX: {{count($only_b)}}
                     </p>
                   </div>
 
@@ -162,8 +162,8 @@
             @endif
         </div>
               <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                  <h3 class="text-primary"><i class="fas fa-cogs"></i> Instruções</h3>
-                  <p class="text-muted">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</p>
+                  <h3 class="text-primary"><i class="fas fa-cogs"></i> FIND-IXDB</h3>
+                  <p class="text-muted">Informe 2 ASNs a ser comparados, e será informado a quantidade total de IXs em cada um dos ASNs, quais IXs exclusivos, quais ambos possuem e quais são compartilhados.</p>
                   <form >
                       <div class="form-group">
                           <input class="form-control" name="asn_a" placeholder="Informe um ASN">

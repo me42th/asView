@@ -40,9 +40,9 @@ class FetchPeering extends Command
         $this->info('        =/\                 /\=');
         $this->info('        / \`._   (\_/)   _.`/ |_`');
         $this->info('       / .``._`--(o.o)--`_.``. |_`');
-        $this->info('      /.` _/ |``=/ " \=``| \_ `. |_`');
-        $this->info('     /` .` `\;-,`\___/`,-;/` `. ` |_`');
-        $this->info('    /.-` ASVIEW `\(-V-)/`       `-.|_`');
+        $this->info('      /.` _/ |``=/ " \=``| \_ `. |-_`');
+        $this->info('     /` .` `\;-,`\___/`,-;/` `. ` |-_`');
+        $this->info('    /.-`ASVIEW `\(-V-)/`       `-.|_-_`.');
         $this->info('    `            "   "');
         $this->info('FETCH PEERING DB DATA');
 

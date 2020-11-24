@@ -15,7 +15,16 @@
               <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                 <div class="row">
 
+                    @if($msg !== '')
+                    <div class="row">
+                      <div class="col-12">
 
+                      <div class="post">
+                          <h2>{{$msg}}</h2>
+                      </div>
+                      </div>
+                    </div>
+                    @endif
                 </div>
                 <div class="card">
                     <!-- /.card-header -->
@@ -32,7 +41,7 @@
                         @foreach($asn as $a)
                           <tr>
                             <td>{{$a->out_asn}}</td>
-                            <td>{{$a->out_name}}</td>
+                            <td><a href="\?asn={{$a->out_asn}}">{{$a->out_name}}</a></td>
                             <td>{{$a->out_policy_general}}</td>
                           </tr>
                         @endforeach
@@ -41,6 +50,29 @@
                     </div>
                   </div>
                   {{ $asn->links() }}
+
+                  @if($list_ix)
+                  <div class="row">
+                    <div class="col-12">
+
+                    <div class="post">
+                        <h2>{{$list_ix[0]->org}}</h2>
+                        <div class="">
+                        </div>
+                        <!-- /.user-block -->
+                        <ol class="text-sm" >
+                            @foreach($list_ix as $el)
+                            <li>
+                                <b>{{$el->out_name}}</b> - {{$el->out_city}} - {{$el->out_country}} - {{$el->out_region_continent}}
+                            </li>
+                            @endforeach
+                        </ol>
+
+                        <p>
+                            Total de IX: {{count($list_ix)}}
+                        </p>
+                    </div></div></div>
+                    @endif
                 @if($org_a && $org_b)
 
                     <div class="row">

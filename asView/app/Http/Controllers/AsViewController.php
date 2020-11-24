@@ -16,6 +16,25 @@ class AsViewController extends Controller
                 ->orWhere('out_name','like',"%$condition%");
 
         }
+        $msg = '';
+        $list_ix = [];
+        if(\Request::has('asn')){
+            $asn_id = $request->query('asn');
+            $sql = "select asn.out_name as org, ix.out_name, ix.out_city, out_country, out_region_continent
+                from asn
+                    join net_ix_lan as pivot
+                        on pivot.out_asn = asn.out_asn
+                    join ix
+                        on pivot.out_ix_id = ix.out_id
+                where asn.out_asn = '$asn_id'
+                group by ix.out_name, asn.out_name, out_city, out_country, out_region_continent;";
+            $list_ix = \DB::select($sql);
+            $name = (\DB::select("select out_name from asn where out_asn = '$asn_id';"))[0]->out_name;
+            if(!$list_ix){
+                $msg = "Nenhum IX encontrado para o ASN $name";
+            }
+        }
+
         $asn_a = null;
         $org_a = null;
         if(\Request::has('asn_a')){
@@ -128,6 +147,6 @@ class AsViewController extends Controller
         }
 
         $asn = $asn->limit(100)->orderBy('out_name')->paginate(100);
-        return view('welcome')->with(compact('asn','intersection','union','org_a','org_b','only_a','only_b','all_a','all_b'));
+        return view('welcome')->with(compact('asn','intersection','union','org_a','org_b','only_a','only_b','all_a','all_b','list_ix','msg'));
     }
 }

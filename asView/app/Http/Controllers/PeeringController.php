@@ -31,6 +31,7 @@ class AsnController extends Controller
     }
 
     public $asn,$ix,$net_ix_lan;
+
     public function index($asn)
     {
         $asn_data = [
@@ -43,7 +44,6 @@ class AsnController extends Controller
             'out_update' => str_replace('Z','',str_replace('T',' ',$asn['updated']))
         ];
         Asn::updateOrCreate(['out_id' => $asn_data['out_id']],\Arr::except($asn_data, ['out_id']));
-
     }
 
     /**
